@@ -12,8 +12,7 @@ import java.time.Duration;
 import static com.codeborne.selenide.Condition.exactText;
 import static com.codeborne.selenide.Condition.visible;
 import static com.codeborne.selenide.Selectors.withText;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.open;
+import static com.codeborne.selenide.Selenide.*;
 
 public class FormTest {
 
@@ -126,4 +125,17 @@ public class FormTest {
         form.$$(".button").find(exactText("Забронировать")).click();
         form.$("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
+//    @Test
+//    void shouldChoiseCityFromPopup() {
+//        SelenideElement form = $(".form");
+//        form.$("[data-test-id=city] .input__control").sendKeys(Keys.chord("ва"));
+//        $$(".popup .popup__content .menu-item)").find(exactText("Москва")).click();
+//
+//
+//        form.$("[data-test-id=date] .input__control").setValue("02.08.2022");
+//        form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
+//        form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
+//        form.$$(".button").find(exactText("Забронировать")).click();
+//        form.$("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
+//    }
 }

@@ -1,5 +1,6 @@
 package ru.netology.web;
 
+import com.codeborne.selenide.Condition;
 import com.codeborne.selenide.Configuration;
 import com.codeborne.selenide.SelenideElement;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,8 +10,8 @@ import org.openqa.selenium.Keys;
 import java.awt.*;
 import java.time.Duration;
 
-import static com.codeborne.selenide.Condition.exactText;
-import static com.codeborne.selenide.Condition.visible;
+import static com.codeborne.selenide.Condition.*;
+import static com.codeborne.selenide.Selectors.byText;
 import static com.codeborne.selenide.Selectors.withText;
 import static com.codeborne.selenide.Selenide.*;
 
@@ -51,7 +52,7 @@ public class FormTest {
     void shouldDateError() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").sendKeys(Keys.CONTROL+"A");
+        form.$("[data-test-id=date] .input__control").sendKeys(Keys.CONTROL + "A");
         form.$("[data-test-id=date] .input__control").sendKeys(Keys.DELETE);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
@@ -125,17 +126,30 @@ public class FormTest {
         form.$$(".button").find(exactText("Забронировать")).click();
         form.$("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
     }
-//    @Test
-//    void shouldChoiseCityFromPopup() {
-//        SelenideElement form = $(".form");
-//        form.$("[data-test-id=city] .input__control").sendKeys(Keys.chord("ва"));
-//        $$(".popup .popup__content .menu-item)").find(exactText("Москва")).click();
-//
-//
-//        form.$("[data-test-id=date] .input__control").setValue("02.08.2022");
-//        form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
-//        form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
-//        form.$$(".button").find(exactText("Забронировать")).click();
-//        form.$("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
-//    }
+
+    @Test
+    void shouldChoiseCityFromList() {
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=city] .input__control").sendKeys(Keys.chord("ва"));
+        $$(".popup .popup__content .menu-item").find(matchText("Москва")).click();
+        form.$("[data-test-id=date] .input__control").setValue("12.12.2022");
+        form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
+        form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
+        form.$("[data-test-id=agreement] .checkbox__box").click();
+        form.$$(".button").find(exactText("Забронировать")).click();
+        $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+    }
+
+    @Test
+    void shouldChoiseDateFromCalendar() {
+        SelenideElement form = $(".form");
+        form.$("[data-test-id=city] .input__control").setValue("Казань");
+        $(".calendar-input .input__box button").click();
+        $$(".popup__container .popup__content .calendar__day").find(exactText("10")).click();
+        form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
+        form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
+        form.$("[data-test-id=agreement] .checkbox__box").click();
+        form.$$(".button").find(exactText("Забронировать")).click();
+        $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+    }
 }

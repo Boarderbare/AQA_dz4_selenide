@@ -23,22 +23,27 @@ public class FormTest {
     void setup() {
         open("http://localhost:9999");
     }
-    private String generateDate (int days){
+    private  String generateDate (int  days){
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
-     String planningDate = generateDate(5);
+     String planningDate = generateDate(7);
 
     @Test
     void shouldSubmitRequest() {
 
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Казань");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
         form.$$(".button").find(exactText("Забронировать")).click();
         $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
+                .shouldBe(visible);
     }
 
     @Test
@@ -46,7 +51,9 @@ public class FormTest {
 
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Муром");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василй Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
@@ -58,8 +65,8 @@ public class FormTest {
     void shouldDateError() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").sendKeys(Keys.CONTROL + "A");
-        form.$("[data-test-id=date] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
@@ -71,7 +78,9 @@ public class FormTest {
     void shouldNameError() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий dfgdfg");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
@@ -83,7 +92,9 @@ public class FormTest {
     void shouldPhoneError() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+796855");
         form.$("[data-test-id=agreement] .checkbox__box").click();
@@ -96,7 +107,9 @@ public class FormTest {
     void shouldEmptyCheckBox() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$$(".button").find(exactText("Забронировать")).click();
@@ -106,7 +119,9 @@ public class FormTest {
     @Test
     void shouldEmptyFieldCity() {
         SelenideElement form = $(".form");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$$(".button").find(exactText("Забронировать")).click();
@@ -117,7 +132,9 @@ public class FormTest {
     void shouldEmptFieldName() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$$(".button").find(exactText("Забронировать")).click();
         form.$("[data-test-id=name].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
@@ -127,7 +144,9 @@ public class FormTest {
     void shouldEmptyFieldPhone() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").setValue("Мурманск");
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Иванов");
         form.$$(".button").find(exactText("Забронировать")).click();
         form.$("[data-test-id=phone].input_invalid .input__sub").shouldHave(exactText("Поле обязательно для заполнения"));
@@ -138,12 +157,17 @@ public class FormTest {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").sendKeys(Keys.chord("ва"));
         $$(".popup .popup__content .menu-item").find(matchText("Москва")).click();
-        form.$("[data-test-id=date] .input__control").setValue("planningDate");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
+        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
+        form.$("[data-test-id='date'] input").setValue(planningDate);
         form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
         form.$$(".button").find(exactText("Забронировать")).click();
         $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
+                .shouldBe(visible);
     }
 
     @Test
@@ -157,5 +181,8 @@ public class FormTest {
         form.$("[data-test-id=agreement] .checkbox__box").click();
         form.$$(".button").find(exactText("Забронировать")).click();
         $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
+        $(".notification__content")
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
+                .shouldBe(visible);
     }
 }

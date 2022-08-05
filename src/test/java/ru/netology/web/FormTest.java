@@ -23,10 +23,13 @@ public class FormTest {
     void setup() {
         open("http://localhost:9999");
     }
-    private  String generateDate (int  days){
+
+    private String generateDate(int days) {
         return LocalDate.now().plusDays(days).format(DateTimeFormatter.ofPattern("dd.MM.yyyy"));
     }
-     String planningDate = generateDate(7);
+
+    String planningDate = generateDate(7);
+
 
     @Test
     void shouldSubmitRequest() {
@@ -153,36 +156,22 @@ public class FormTest {
     }
 
     @Test
-    void shouldChoiseCityFromList() {
+    void shouldChoiseCityFromListAndDateFromCalendar() {
         SelenideElement form = $(".form");
         form.$("[data-test-id=city] .input__control").sendKeys(Keys.chord("ва"));
         $$(".popup .popup__content .menu-item").find(matchText("Москва")).click();
-        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.CONTROL + "A");
-        form.$("[data-test-id='date'] .input__control").sendKeys(Keys.DELETE);
-        form.$("[data-test-id='date'] input").setValue(planningDate);
-        form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
-        form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
-        form.$("[data-test-id=agreement] .checkbox__box").click();
-        form.$$(".button").find(exactText("Забронировать")).click();
-        $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
-        $(".notification__content")
-                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
-                .shouldBe(visible);
-    }
-
-    @Test
-    void shouldChoiseDateFromCalendar() {
-        SelenideElement form = $(".form");
-        form.$("[data-test-id=city] .input__control").setValue("Казань");
         $(".calendar-input .input__box button").click();
-        $$(".popup__container .popup__content .calendar__day").find(exactText("10")).click();
+        if (LocalDate.now().plusDays(3).getMonth() != LocalDate.now().plusDays(7).getMonth()) {
+            $("[data-step='1']").click();
+        }
+        var weekDateDay = String.valueOf(LocalDate.now().plusDays(7).getDayOfMonth());
+        $$(".popup__container .calendar__day").find(exactText(weekDateDay)).click();
         form.$("[data-test-id=name] .input__control").setValue("Василий Белов-Задунайский");
         form.$("[data-test-id=phone] .input__control").setValue("+79685554433");
         form.$("[data-test-id=agreement] .checkbox__box").click();
         form.$$(".button").find(exactText("Забронировать")).click();
         $(withText("Успешно")).shouldBe(visible, Duration.ofSeconds(15));
         $(".notification__content")
-                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15))
-                .shouldBe(visible);
+                .shouldHave(Condition.text("Встреча успешно забронирована на " + planningDate), Duration.ofSeconds(15)).shouldBe(visible);
     }
 }
